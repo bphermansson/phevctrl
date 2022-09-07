@@ -1,7 +1,48 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, Alert, TouchableOpacity} from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { Component, useState } from 'react';
+import netc from './netcall.js';
 
+function PressLockStatus(what) {
+  
+  //console.log(what)
+  alert('You tapped the button!')
+}
+
+export default class phevInfo extends Component {
+
+  _functionOne(){
+    netc.nc('ok');
+    };
+  _functionLockstatus(){
+      netc.nc('lockstatus');
+      };
+   
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <View style={styles.buttonContainer}>
+          <Button
+            onPress={this._functionLockstatus}
+            title="Lockstatus"
+          />
+        </View>
+      </View>
+    );
+  }
+}
+
+
+const styles = StyleSheet.create({
+  container: {
+   flex: 1,
+   justifyContent: 'center',
+  },
+});
+
+
+{/*
 const infoText = "..."
 
 const styles = StyleSheet.create({
@@ -28,6 +69,8 @@ const styles = StyleSheet.create({
   }
 });
 
+
+
 const Flex = () => {
   return (
     <View style={[styles.container, {
@@ -45,17 +88,21 @@ const Flex = () => {
           onPress={() => Alert.alert('Simple Button pressed')}
         />
         <Button
-          title="Press me too"
-          onPress={() => Alrt()}
+          title="Lock status"
+          
+          onPress={() => {
+            _onPressButton(); 
+         }}  
+
         />
         <Text>{infoText}</Text>
         <TouchableOpacity onPress={_onPressButton}> 
         <Text style = {styles.opacityButton}>
-          button name
+          Dummy
         </Text>
       </TouchableOpacity >
+      
 
-      {getLockStatus()}
 
       </View> 
       <View style={{ flex: 3, backgroundColor: "green" }} />
@@ -65,49 +112,29 @@ const Flex = () => {
 
 const _onPressButton = () => {
   return (
-    Alert.alert('Alrt Button pressed')
+    <View>
+      Alert.alert('Alrt Button pressed')
+      getCarData('lockstatus')
+      console.log("Ok")
+    </View>
   );
 }
-
 
 const Alrt = () => {
   return (
-    Alert.alert('Alrt Button pressed')
+    <View>
+      Alert.alert('Alrt Button pressed')
+      getCarData('lockstatus')
+    </View>
   );
 }
-
-const getLockStatus = () => {
-  const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
-  console.log(data);
-
-  useEffect(() => {
-    fetch('http://192.168.1.190:8000/?func=lockstatus')
-      .then((response) => response.json())
-      .then((json) => setData(json))
-      .catch((error) => console.error(error))
-      .finally(() => setLoading(false));
-  }, []);
-
-  return (
-    Alert.alert("ok") 
-  );
-}
-
-  
-
-
- {/* */}
+ 
 
 const App = () => {
   return (
     <View style={styles.container}>
     <Flex/>
     
-    {/*
-      <Text>Open up App.js to start working! on your app!</Text>
-      <StatusBar style="auto" />
-    */}
 
 
 
@@ -116,4 +143,11 @@ const App = () => {
   );
 }
 
-export default Flex;
+export default Flex; */}
+
+{/* */}
+
+    {/*
+      <Text>Open up App.js to start working! on your app!</Text>
+      <StatusBar style="auto" />
+    */}
