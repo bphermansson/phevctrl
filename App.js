@@ -1,55 +1,83 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, Alert, TouchableOpacity} from 'react-native';
-import React, { Component, useState } from 'react';
-import netc from './netcall.js';
+import React, { Component, useState, useEffect } from 'react';
+import CoffeeAutonomous from "./components/CoffeeAutonomous";
+import axios from 'axios';
 
-function PressLockStatus(what) {
-  
-  //console.log(what)
-  alert('You tapped the button!')
-}
+  var baseURL = "http://192.168.1.190:8000/?func=";
 
-export default class phevInfo extends Component {
+  /*
 
-  _functionOne(){
-    netc.nc('ok');
-    };
-  _functionLockstatus(){
-      netc.nc('lockstatus');
-      };
-   
+  class netCall {
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.buttonContainer}>
-          <Button
-            onPress={this._functionLockstatus}
-            title="Lockstatus"
-          />
-        </View>
-      </View>
-    );
+    render () {
+      console.log("nc")
+
+      return (
+            <Text>Hello World!</Text>
+        )
+    }
   }
-}
 
+
+  function App() {
+
+    let [battStatus, setDogImage] = useState(null)
+    let [lockStatus, setLockStatus] = useState(null)
+    const [data, setData] = useState({ hits: [] });
+
+    useEffect(() => {
+      var url = baseURL + "lockstatus"
+      const fetchData = async () => {
+        const result = await axios(
+          url,
+        );
+        console.log(result.data)
+        setData(result.data);
+      };
+  
+      fetchData();
+    }, []);
+ 
+
+    return (
+      <View style={{ flex: 2, backgroundColor: "darkorange", justifyContent: 'center',}}>
+        <Text>
+          test
+        </Text>
+      </View>
+    )
+  }
+      
+*/
+
+  //export default App;
+
+  export default function App() {
+    return <CoffeeAutonomous />;
+  }
 
 const styles = StyleSheet.create({
-  container: {
-   flex: 1,
-   justifyContent: 'center',
+    container: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+    txt: {
+      //flex: 1,
+      padding: 20,
+      margin: 10,
   },
 });
 
 
-{/*
+
+
+
+
+{
+  /*
 const infoText = "..."
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
   label: {
     textAlign: "center",
     marginBottom: 10,
@@ -143,7 +171,8 @@ const App = () => {
   );
 }
 
-export default Flex; */}
+export default Flex; */
+}
 
 {/* */}
 
