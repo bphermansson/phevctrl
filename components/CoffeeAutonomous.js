@@ -4,34 +4,32 @@ import { StyleSheet } from 'react-native';
 import { Box, FlatList, Center, NativeBaseProvider, Text, View } from "native-base";
 import { padding } from "styled-system";
 
-export default function CoffeeAutonomous() {
-    const [data, setData] = useState([]);
-    const [moredata, setMoreData] = useState([]);
+export default function GetCarData() {
+    const [lockData, setLockData] = useState([]);
+    const [batteryData, setBatteryData] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const fetchData = async () => {
+    const fetchLockData = async () => {
         var baseURL = "http://192.168.1.190:8000/?func=";
-
-
         const resp = await fetch(baseURL+"lockstatus");
-        const data = await resp.json();
-        console.log("Data: " + data.result)
-        setData(data);
+        const lockStatus = await resp.json();
+        console.log("Lock status: " + lockStatus.result)
+        setLockData(lockStatus);
         setLoading(false);
     };
 
-    const fetchMoreData = async () => {
+    const fetchBatteryData = async () => {
       var baseURL = "http://192.168.1.190:8000/?func=";
       const resp = await fetch(baseURL+"battery");
-      const moredata = await resp.json();
-      console.log("More data: " + moredata.result)
-      setMoreData(moredata);
+      const batteryData = await resp.json();
+      console.log("Battery data: " + batteryData.result)
+      setBatteryData(batteryData);
       setLoading(false);
   };
 
     useEffect(() => {
-        fetchData();
-        fetchMoreData();
+        fetchLockData();
+        fetchBatteryData();
       }, []);
 
   return (
@@ -39,16 +37,13 @@ export default function CoffeeAutonomous() {
       <View style={{ flex: 1, backgroundColor: "red", height: 20 }} />
       <View style={{ flex: 2, backgroundColor: "white"}} >
         <Text style={styles.baseText}>
-            {data.cmd}:{data.result}
+            {lockData.cmd}:{lockData.result}
         </Text>  
         <Text style={styles.baseText}>
-            {moredata.cmd}:{moredata.result}
+            {batteryData.cmd}:{batteryData.result}
         </Text>  
 
       </View>
-    
-
-
     </NativeBaseProvider>
   );
 }

@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, Alert, TouchableOpacity} from 'react-native';
 import React, { Component, useState, useEffect } from 'react';
-import CoffeeAutonomous from "./components/CoffeeAutonomous";
+import GetCarData from "./components/CoffeeAutonomous";
 import axios from 'axios';
 
   var baseURL = "http://192.168.1.190:8000/?func=";
@@ -54,7 +54,7 @@ import axios from 'axios';
   //export default App;
 
   export default function App() {
-    return <CoffeeAutonomous />;
+    return <GetCarData />;
   }
 
 const styles = StyleSheet.create({
