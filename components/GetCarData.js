@@ -1,6 +1,6 @@
 // https://blog.logrocket.com/data-fetching-react-native/
 import React, { useState, useEffect } from "react";
-import { StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, TouchableNativeFeedback } from 'react-native';
 import { Box, FlatList, Center, NativeBaseProvider, Text, View, Button } from "native-base";
 import { padding } from "styled-system";
 import { withTheme } from "styled-components";
@@ -9,6 +9,7 @@ export default function GetCarData() {
     const [lockData, setLockData] = useState([]);
     const [batteryData, setBatteryData] = useState([]);
     const [chargeData, setChargeData] = useState([]);
+    const [hvacData, setHvacData] = useState([]);
 
     var baseURL = "http://192.168.1.190:8000/?func=";
 
@@ -16,7 +17,17 @@ export default function GetCarData() {
         const resp = await fetch(baseURL+"lockstatus");
         const lockStatus = await resp.json();
         console.log("Lock status: " + lockStatus.result)
-        setLockData(lockStatus);
+        var lockSts = "Unlocked";
+        if (lockStatus.result == 1)
+        {
+          lockSts = "Unlocked";
+          console.log(lockSts);
+        }
+        else {
+          lockSts = "Locked";
+          console.log(lockSts);
+        }
+        setLockData(lockSts);
     };
     const fetchBatteryData = async () => {
       const resp = await fetch(baseURL+"battery");
@@ -24,6 +35,20 @@ export default function GetCarData() {
       console.log("Battery data: " + batteryData.result)
       setBatteryData(batteryData);
     };
+    const fetchHvacStatus = async () => {
+      const resp = await fetch(baseURL+"hvacmode");
+      const hvacData = await resp.json();
+      console.log("Hvac data: " + hvacData.result)
+      if (hvacData.result == 2)
+      {
+        console.log("Heat");
+      }
+      else {
+        console.log("Cool");
+      }
+      setHvacData(hvacData);
+    };
+    
     const onCheckChargeButton = async () => {
       //http://192.168.1.79:8000/?func=chargestatus
       const resp = await fetch(baseURL+"chargestatus");
@@ -35,6 +60,7 @@ export default function GetCarData() {
     useEffect(() => {
         fetchLockData();
         fetchBatteryData();
+        fetchHvacStatus();
       }, []);
 
   return (
@@ -46,7 +72,7 @@ export default function GetCarData() {
       </View>
       <View style={{ flex: 2, backgroundColor: "white"}} >
         <Text style={styles.baseText}>
-            {lockData.cmd}:{lockData.result}
+            {lockData.cmd}:{lockData}
         </Text>  
         <Text style={styles.baseText}>
             {batteryData.cmd}:{batteryData.result}
@@ -54,14 +80,16 @@ export default function GetCarData() {
         <Text style={styles.baseText}>
             Chargestatus:{chargeData.result}
         </Text>  
+        <Text style={styles.baseText}>
+            AC mode:{hvacData.result}
+        </Text>  
       </View>
-      <TouchableWithoutFeedback
-            onPress={onCheckChargeButton}           
-            >
+      <TouchableNativeFeedback
+            onPress={onCheckChargeButton} >
           <View style={styles.button}>
             <Text style={styles.buttonText}>Check charge status</Text>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableNativeFeedback>
     </NativeBaseProvider>
   );
 }
