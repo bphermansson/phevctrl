@@ -15,7 +15,6 @@ export default function GetCarData() {
 
     var baseURL = "http://192.168.1.190:8000/?func=";
     
-
     const fetchLockData = async () => {
         const resp = await fetch(baseURL+"lockstatus");
         const lockStatus = await resp.json();
@@ -26,7 +25,8 @@ export default function GetCarData() {
           lockSts = "Locked";
           console.log(lockSts);
         }
-        else {
+        else 
+        {
           lockSts = "Unlocked";
           console.log(lockSts);
         }
@@ -38,6 +38,23 @@ export default function GetCarData() {
       console.log("Battery data: " + batteryData.result)
       setBatteryData(batteryData);
     };
+
+    const fetchChargeStatus = async () => {
+      const resp = await fetch(baseURL+"chargestatus");
+      const chargeData = await resp.json();
+      console.log("Charge status: " + chargeData.result)
+      var chargingYesNo;
+      if (chargeData.result == 0)
+      {
+        chargingYesNo = "No";
+      }
+      else
+      {
+        chargingYesNo = "Yes";
+      }
+      setChargeData(chargingYesNo);
+    };
+
     const fetchHvacStatus = async () => {
       const resp = await fetch(baseURL+"hvacmode");
       const hvacData = await resp.json();
@@ -71,22 +88,14 @@ export default function GetCarData() {
       setHvacOperating(hvacOnOff)
     };
 
+    const onHeatButton = async () => {
+      alert("I'm doing nothing!");
+    };
+
     function setNewRefreshButtonText(text) {
       console.log(text);
       setRefreshButtonText(text);
   }
-  
-    const fetchChargeStatus = async () => {
-      //http://192.168.1.79:8000/?func=chargestatus
-      const resp = await fetch(baseURL+"chargestatus");
-      const chargeData = await resp.json();
-      console.log("Charge status: " + chargeData.result)
-      setChargeData(chargeData);
-    };
-
-    const onHeatButton = async () => {
-    };
-
     const onRefreshButton = async () => {
       setNewRefreshButtonText("Wait...");
       console.log("Refresh values");
@@ -95,16 +104,19 @@ export default function GetCarData() {
       setHvacData("-");
       fetchLockData();
       fetchBatteryData();
-      fetchHvacStatus();
       fetchChargeStatus();
+      fetchHvacStatus();  // Let this be last as it resets the Refresh button text
     };
 
     useEffect(() => {
+      console.log("Fetch data");
+      setChargeData("");
         fetchLockData();
         fetchBatteryData();
         fetchHvacStatus();
         fetchHvacOperating();
         fetchChargeStatus();
+        console.log("Done fetching data");
       }, []);
 
   return (
@@ -119,16 +131,16 @@ export default function GetCarData() {
             Lock status: {lockData}
         </Text>  
         <Text style={styles.baseText}>
-            Battery:{batteryData.result}
+            Battery: {batteryData.result}
         </Text>  
         <Text style={styles.baseText}>
-            Chargestatus:{chargeData.result}
+            Charging? {chargeData}
         </Text>  
         <Text style={styles.baseText}>
-            AC mode:{hvacData}
+            AC mode: {hvacData}
         </Text>  
         <Text style={styles.baseText}>
-            AC status:{hvacOperating}
+            AC status: {hvacOperating}
         </Text>  
       </View>
 
