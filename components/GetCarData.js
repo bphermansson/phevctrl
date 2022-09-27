@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, TouchableNativeFeedback } from 'react-native';
 import { Box, FlatList, Center, NativeBaseProvider, Text, View, Button } from "native-base";
-import { padding } from "styled-system";
+import { fontSize, padding } from "styled-system";
 import { withTheme } from "styled-components";
 
 export default function GetCarData() {
@@ -10,8 +10,11 @@ export default function GetCarData() {
     const [batteryData, setBatteryData] = useState([]);
     const [chargeData, setChargeData] = useState([]);
     const [hvacData, setHvacData] = useState([]);
+    const [hvacOperating, setHvacOperating] = useState([]);
+    const [refreshButtonText, setRefreshButtonText]= useState(['Refresh']);
 
     var baseURL = "http://192.168.1.190:8000/?func=";
+    
 
     const fetchLockData = async () => {
         const resp = await fetch(baseURL+"lockstatus");
@@ -20,11 +23,11 @@ export default function GetCarData() {
         var lockSts = "Unlocked";
         if (lockStatus.result == 1)
         {
-          lockSts = "Unlocked";
+          lockSts = "Locked";
           console.log(lockSts);
         }
         else {
-          lockSts = "Locked";
+          lockSts = "Unlocked";
           console.log(lockSts);
         }
         setLockData(lockSts);
@@ -38,18 +41,42 @@ export default function GetCarData() {
     const fetchHvacStatus = async () => {
       const resp = await fetch(baseURL+"hvacmode");
       const hvacData = await resp.json();
+      var hvacStatus = "";
       console.log("Hvac data: " + hvacData.result)
       if (hvacData.result == 2)
       {
-        console.log("Heat");
+        hvacStatus = "Heat";
       }
       else {
-        console.log("Cool");
+        hvacStatus = "Cool";
       }
-      setHvacData(hvacData);
+      console.log("hvacStatus-" + hvacStatus);
+      setHvacData(hvacStatus);
+      setNewRefreshButtonText("Refresh");
     };
-    
-    const onCheckChargeButton = async () => {
+
+    const fetchHvacOperating = async () => {
+      const resp = await fetch(baseURL+"hvacoperating ");
+      const hvacOperating = await resp.json();
+      console.log("Hvac operating: " + hvacOperating.result)
+      var hvacOnOff;
+      if (hvacOperating.result == 0)
+      {
+        hvacOnOff = "Off";
+      }
+      else 
+      {
+        hvacOnOff = "On";
+      }
+      setHvacOperating(hvacOnOff)
+    };
+
+    function setNewRefreshButtonText(text) {
+      console.log(text);
+      setRefreshButtonText(text);
+  }
+  
+    const fetchChargeStatus = async () => {
       //http://192.168.1.79:8000/?func=chargestatus
       const resp = await fetch(baseURL+"chargestatus");
       const chargeData = await resp.json();
@@ -57,10 +84,27 @@ export default function GetCarData() {
       setChargeData(chargeData);
     };
 
+    const onHeatButton = async () => {
+    };
+
+    const onRefreshButton = async () => {
+      setNewRefreshButtonText("Wait...");
+      console.log("Refresh values");
+      setBatteryData(0);
+      setChargeData(0);
+      setHvacData("-");
+      fetchLockData();
+      fetchBatteryData();
+      fetchHvacStatus();
+      fetchChargeStatus();
+    };
+
     useEffect(() => {
         fetchLockData();
         fetchBatteryData();
         fetchHvacStatus();
+        fetchHvacOperating();
+        fetchChargeStatus();
       }, []);
 
   return (
@@ -72,24 +116,35 @@ export default function GetCarData() {
       </View>
       <View style={{ flex: 2, backgroundColor: "white"}} >
         <Text style={styles.baseText}>
-            {lockData.cmd}:{lockData}
+            Lock status: {lockData}
         </Text>  
         <Text style={styles.baseText}>
-            {batteryData.cmd}:{batteryData.result}
+            Battery:{batteryData.result}
         </Text>  
         <Text style={styles.baseText}>
             Chargestatus:{chargeData.result}
         </Text>  
         <Text style={styles.baseText}>
-            AC mode:{hvacData.result}
+            AC mode:{hvacData}
+        </Text>  
+        <Text style={styles.baseText}>
+            AC status:{hvacOperating}
         </Text>  
       </View>
+
       <TouchableNativeFeedback
-            onPress={onCheckChargeButton} >
+          onPress={onHeatButton} >
           <View style={styles.button}>
-            <Text style={styles.buttonText}>Check charge status</Text>
+            <Text style={styles.buttonText}>Heat car</Text>
           </View>
         </TouchableNativeFeedback>
+        <TouchableNativeFeedback
+          onPress={onRefreshButton} >
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>{refreshButtonText}</Text>
+          </View>
+        </TouchableNativeFeedback>
+
     </NativeBaseProvider>
   );
 }
@@ -103,20 +158,23 @@ const styles = StyleSheet.create({
   },
   baseText: {
     fontWeight: 'bold',
-    padding: 10
+    padding: 10,
+    fontSize: 18
   },
   innerText: {
     color: 'red'
   },
   button: {
     marginBottom: 30,
-    width: 260,
     alignItems: 'center',
-    backgroundColor: '#2196F3'
+    backgroundColor: '#2196F3',
+    justifyContent: 'center',
+    flex:1
   },
   buttonText: {
     textAlign: 'center',
     padding: 20,
-    color: 'white'
+    color: 'white',
+    fontSize: 18
   }
 });
