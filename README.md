@@ -7,7 +7,7 @@ To make this easier there's a project called phevctl (https://github.com/phev-re
 control the car. The commands are supposed to be run on a computer with a second network card, a wireless one.
 This card is configured and connected to the car's Wifi, so you can control the car easily by just issuing a command.
 
-To make this more available (connect to this computer via SSH exery time is not smooth), I have created a webserver that translates commands. 
+To make this more available (connect to this computer via SSH exery time is not smooth), I have created a webserver that translates commands (https://gist.github.com/bphermansson/d8137ed1587fb4aa4d5c899b0d7b287f). 
 This acts as a form of Rest gateway, different requests to the server runs different phevctl commands. This way you can 
 use a browser on another computer instead of connecting via SSH.
 
