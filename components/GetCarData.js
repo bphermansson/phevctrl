@@ -128,7 +128,10 @@ export default function GetCarData() {
           <Text style={styles.header}>
             phevctrl
           </Text>
-          <Image source={require('../assets/outlanderFront.jpg')} />
+          <Image 
+            source={require('../assets/outlanderFront.jpg')} 
+            alt="Logo image"
+          />
 
       </View>
       <View style={{ flex: 2, backgroundColor: "white"}} >
