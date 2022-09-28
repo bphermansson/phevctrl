@@ -1,7 +1,7 @@
 // https://blog.logrocket.com/data-fetching-react-native/
 import React, { useState, useEffect } from "react";
 import { StyleSheet, TouchableNativeFeedback } from 'react-native';
-import { Box, FlatList, Center, NativeBaseProvider, Text, View, Button } from "native-base";
+import { Box, FlatList, Center, NativeBaseProvider, Text, View, Image } from "native-base";
 import { fontSize, padding } from "styled-system";
 import { withTheme } from "styled-components";
 
@@ -119,12 +119,17 @@ export default function GetCarData() {
         console.log("Done fetching data");
       }, []);
 
+      //       /* TODO Add a live clock*/
+
   return (
     <NativeBaseProvider>
+
       <View style={{ flex: 1, backgroundColor: "black", height: 20 }} >
           <Text style={styles.header}>
             phevctrl
           </Text>
+          <Image source={require('../assets/outlanderFront.jpg')} />
+
       </View>
       <View style={{ flex: 2, backgroundColor: "white"}} >
         <Text style={styles.baseText}>
