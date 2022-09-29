@@ -13,3 +13,7 @@ use a browser on another computer instead of connecting via SSH.
 
 But to type different url:s in a browser aint to smooth either. It is the year 2022, so there should be an app for that. And 
 that just what this projects is all about, developing an app to control the car in a more convenient way than with the original app.
+
+
+Dependencies:
+https://www.npmjs.com/package/radio-buttons-react-native
