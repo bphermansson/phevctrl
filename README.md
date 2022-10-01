@@ -17,3 +17,5 @@ that just what this projects is all about, developing an app to control the car 
 
 Dependencies:
 https://www.npmjs.com/package/radio-buttons-react-native
+
+npm install @ridenui/react-native-riden-ssh --save
