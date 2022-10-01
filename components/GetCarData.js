@@ -1,6 +1,6 @@
 // https://blog.logrocket.com/data-fetching-react-native/
 import React, { useState, useEffect } from "react";
-import { StyleSheet, TouchableNativeFeedback} from 'react-native';
+import { StyleSheet, TouchableNativeFeedback, Alert} from 'react-native';
 import RadioButtonRN from 'radio-buttons-react-native';
 import { Box, FlatList, Center, NativeBaseProvider, Text, View, Image } from "native-base";
 import { fontSize, padding } from "styled-system";
@@ -17,21 +17,33 @@ export default function GetCarData() {
     var hvacStatus = "";
 
     const fetchLockData = async () => {
-        const resp = await fetch(baseURL+"lockstatus");
-        const lockStatus = await resp.json();
-        console.log("Lock status: " + lockStatus.result)
-        var lockSts = "Unlocked";
-        if (lockStatus.result == 1)
-        {
-          lockSts = "Locked";
-          console.log(lockSts);
-        }
-        else 
-        {
-          lockSts = "Unlocked";
-          console.log(lockSts);
-        }
-        setLockData(lockSts);
+    console.log(fetchLockData);
+    var lockStatus="";
+    setLockData(lockSts);
+    // If we dont get a response in 30 seconds, something is wrong with the server. 
+    setTimeout(() => {
+      if (typeof(lockStatus) !== 'undefined' && lockStatus != null) {
+        console.log('Data retrieved as expected')
+      } else {
+        console.log('No lockstatus retrieved after 30 seconds')
+        Alert.alert('Network error, no data retrieved!');
+      }
+    }, 30000);
+
+    const resp = await fetch(baseURL+"lockstatus");
+    lockStatus = await resp.json();
+    console.log("Lock status: " + lockStatus.result)
+    var lockSts = "Unlocked";
+    if (lockStatus.result == 1)
+    {
+      lockSts = "Locked";
+    }
+    else 
+    {
+      lockSts = "Unlocked";
+    }
+    console.log(lockSts);
+    setLockData(lockSts);
     };
     const fetchBatteryData = async () => {
       const resp = await fetch(baseURL+"battery");
