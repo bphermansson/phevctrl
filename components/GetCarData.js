@@ -1,36 +1,49 @@
 // https://blog.logrocket.com/data-fetching-react-native/
 import React, { useState, useEffect } from "react";
-import { StyleSheet, TouchableNativeFeedback } from 'react-native';
+import { StyleSheet, TouchableNativeFeedback, Alert} from 'react-native';
+import RadioButtonRN from 'radio-buttons-react-native';
 import { Box, FlatList, Center, NativeBaseProvider, Text, View, Image } from "native-base";
 import { fontSize, padding } from "styled-system";
-import { withTheme } from "styled-components";
 
 export default function GetCarData() {
     const [lockData, setLockData] = useState([]);
     const [batteryData, setBatteryData] = useState([]);
     const [chargeData, setChargeData] = useState([]);
-    const [hvacData, setHvacData] = useState([]);
+    const [hvacData, setHvacMode] = useState([]);
     const [hvacOperating, setHvacOperating] = useState([]);
     const [refreshButtonText, setRefreshButtonText]= useState(['Refresh']);
 
     var baseURL = "http://192.168.1.190:8000/?func=";
-    
+    var hvacStatus = "";
+
     const fetchLockData = async () => {
-        const resp = await fetch(baseURL+"lockstatus");
-        const lockStatus = await resp.json();
-        console.log("Lock status: " + lockStatus.result)
-        var lockSts = "Unlocked";
-        if (lockStatus.result == 1)
-        {
-          lockSts = "Locked";
-          console.log(lockSts);
-        }
-        else 
-        {
-          lockSts = "Unlocked";
-          console.log(lockSts);
-        }
-        setLockData(lockSts);
+    console.log(fetchLockData);
+    var lockStatus="";
+    setLockData(lockSts);
+    // If we dont get a response in 30 seconds, something is wrong with the server. 
+    setTimeout(() => {
+      if (typeof(lockStatus) !== 'undefined' && lockStatus != null) {
+        console.log('Data retrieved as expected')
+      } else {
+        console.log('No lockstatus retrieved after 30 seconds')
+        Alert.alert('Network error, no data retrieved!');
+      }
+    }, 30000);
+
+    const resp = await fetch(baseURL+"lockstatus");
+    lockStatus = await resp.json();
+    console.log("Lock status: " + lockStatus.result)
+    var lockSts = "Unlocked";
+    if (lockStatus.result == 1)
+    {
+      lockSts = "Locked";
+    }
+    else 
+    {
+      lockSts = "Unlocked";
+    }
+    console.log(lockSts);
+    setLockData(lockSts);
     };
     const fetchBatteryData = async () => {
       const resp = await fetch(baseURL+"battery");
@@ -57,10 +70,9 @@ export default function GetCarData() {
 
     const fetchHvacStatus = async () => {
       const resp = await fetch(baseURL+"hvacmode");
-      const hvacData = await resp.json();
-      var hvacStatus = "";
-      console.log("Hvac data: " + hvacData.result)
-      if (hvacData.result == 2)
+      const hvacMode = await resp.json();
+      console.log("Hvac mode: " + hvacMode.result)
+      if (hvacMode.result == 2)
       {
         hvacStatus = "Heat";
       }
@@ -68,7 +80,7 @@ export default function GetCarData() {
         hvacStatus = "Cool";
       }
       console.log("hvacStatus-" + hvacStatus);
-      setHvacData(hvacStatus);
+      setHvacMode(hvacStatus);
       setNewRefreshButtonText("Refresh");
     };
 
@@ -88,20 +100,28 @@ export default function GetCarData() {
       setHvacOperating(hvacOnOff)
     };
 
-    const onHeatButton = async () => {
-      alert("I'm doing nothing!");
+    const onAcModeSelect = async (e) => {
+      const dta = e.json();
+      alert(dta + "I'm doing nothing!");
+      //console.log("AC mode: " + hvacStatus)
+      // Get AC mode
     };
+
+    const acModeChange = (data, e) => {
+      console.log("---" + data.label)
+
+    }
 
     function setNewRefreshButtonText(text) {
       console.log(text);
       setRefreshButtonText(text);
-  }
+    }
     const onRefreshButton = async () => {
       setNewRefreshButtonText("Wait...");
-      console.log("Refresh values");
+      console.log("Refresh values, wait...");
       setBatteryData(0);
       setChargeData(0);
-      setHvacData("-");
+      setHvacMode(0);
       fetchLockData();
       fetchBatteryData();
       fetchChargeStatus();
@@ -121,9 +141,21 @@ export default function GetCarData() {
 
       //       /* TODO Add a live clock*/
 
+
+      const acModeData = [
+        {
+          label: 'AC mode cool'
+         },
+         {
+          label: 'AC mode heat'
+         },
+         {
+          label: 'AC mode windscreen'
+         }
+        ];
+
   return (
     <NativeBaseProvider>
-
       <View style={{ flex: 1, backgroundColor: "black", height: 20 }} >
           <Text style={styles.header}>
             phevctrl
@@ -132,7 +164,6 @@ export default function GetCarData() {
             source={require('../assets/outlanderFront.jpg')} 
             alt="Logo image"
           />
-
       </View>
       <View style={{ flex: 2, backgroundColor: "white"}} >
         <Text style={styles.baseText}>
@@ -148,10 +179,15 @@ export default function GetCarData() {
             AC mode: {hvacData}
         </Text>  
         <Text style={styles.baseText}>
-            AC status: {hvacOperating}
-        </Text>  
-      </View>
+          AC on/off: {hvacOperating}
+          </Text>
+        <RadioButtonRN
+          // This can be styled if we wish, see docs
+          data={acModeData}
+          selectedBtn={(e) => acModeChange(e)}
+        />
 
+      {/*
       <TouchableNativeFeedback
           onPress={onHeatButton} >
           <View style={styles.button}>
@@ -159,12 +195,19 @@ export default function GetCarData() {
           </View>
         </TouchableNativeFeedback>
         <TouchableNativeFeedback
+          onPress={onSetACModeButton} >
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>AC Mode</Text>
+          </View>
+        </TouchableNativeFeedback>
+      */}
+        <TouchableNativeFeedback
           onPress={onRefreshButton} >
           <View style={styles.button}>
             <Text style={styles.buttonText}>{refreshButtonText}</Text>
           </View>
         </TouchableNativeFeedback>
-
+        </View>
     </NativeBaseProvider>
   );
 }
