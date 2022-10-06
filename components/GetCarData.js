@@ -1,9 +1,9 @@
 // https://blog.logrocket.com/data-fetching-react-native/
 import React, { useState, useEffect } from "react";
 import { StyleSheet, TouchableNativeFeedback, Alert, StatusBar} from 'react-native';
-import RadioButtonRN from 'radio-buttons-react-native';
 import { Box, FlatList, Center, NativeBaseProvider, Text, View, Image } from "native-base";
 import { fontSize, padding, textColor } from "styled-system";
+import RadioForm from 'react-native-simple-radio-button';
 
 export default function GetCarData() {
     const [lockData, setLockData] = useState([]);
@@ -116,21 +116,19 @@ export default function GetCarData() {
       // Get AC mode
     };
 
-    const acModeChange = (data, e) => {
-      console.log("---" + data.label)
+    const acModeChange = (modeData, e) => {
       //func=acmode&mode=cool&time=10
-//      var func=acmode&mode=cool&time=10;
+      console.log("---" + modeData)
 
-
-      if (data.label == 'AC mode heat')
+      if (modeData == 'heat')
       {
         console.log("Set heat")
       }
-      else if (data.label == 'AC mode cool')
+      else if (modeData == 'cool')
       {
         console.log("Set cool")
       }
-      else if (data.label == 'AC mode windscreen')
+      else if (modeData == 'windscreen')
       {
         console.log("Set windscreen")
       }
@@ -138,6 +136,12 @@ export default function GetCarData() {
       {
         console.log("Error")
       }
+      setChosenOptionMode(modeData)
+    }
+
+    const acTimeChange = (timeData, e) => {
+      console.log("---" + timeData)
+      setChosenOptionTime(timeData)
     }
 
     function setNewRefreshButtonText(text) 
@@ -194,28 +198,19 @@ export default function GetCarData() {
         )
       }
       
-      const acModeData = [
-        {
-          label: 'AC mode cool'
-         },
-         {
-          label: 'AC mode heat'
-         },
-         {
-          label: 'AC mode windscreen'
-         }
-        ];
-      const setAcTime = [
-        {
-          label: '10 min'
-         },
-         {
-          label: '20 min'
-         },
-         {
-          label: '30 min'
-         }
-        ];
+      const [chosenOptionMode, setChosenOptionMode] = useState('cool'); //will store our current user options
+      const [chosenOptionTime, setChosenOptionTime] = useState('10 min'); 
+      
+      const options_mode = [
+        { label: 'AC mode cool', value: 'cool' },
+        { label: 'AC mode heat', value: 'heat' },
+        { label: 'AC mode windscreen', value: 'windscreen' },
+      ]; //create our options for radio group
+      const options_time = [
+        { label: '10 min', value: '10 min' },
+        { label: '20 min', value: '20 min' },
+        { label: '30 min', value: '30 min' },
+      ]; //create our options for radio group
 
   return (
     <NativeBaseProvider>
@@ -248,31 +243,34 @@ export default function GetCarData() {
         <Text style={styles.baseText}>
           AC on/off: {hvacOperating}
         </Text>
-      </View>
-    
+      </View>    
+ 
       <View style={styles.rowcontainer}>
-        <View style={{ backgroundColor: "#7cb18f"}} >
-          <Text style={{ color: "#000",}}>
-            <RadioButtonRN
-              data={acModeData}
-              selectedBtn={(e) => acModeChange(e)}
-              circleSize={10}
-            />
-          </Text>
-        </View>        
-        <View style={{ backgroundColor: "#7cb18f"}} >
-          <Text style={{ color: "#000",}}>
-            <RadioButtonRN
-              data={setAcTime}
-              selectedBtn={(e) => acModeChange(e)}
-              circleSize={10}
-            />
-          </Text>
-        </View>        
         <View style={styles.square} >
-          <Text>t</Text>
+          <Text> {chosenOptionMode}</Text>
+          <RadioForm
+            radio_props={options_mode}
+            buttonSize={8}
+            initial={0} //initial value of this group
+            onPress={(value) => {
+              acModeChange(value)
+            }} //if the user changes options, set the new value
+          />
         </View>
+        <View style={styles.square} >
+          <Text> {chosenOptionTime}</Text>
+            <RadioForm
+              radio_props={options_time}
+              buttonSize={8}
+              initial={0} //initial value of this group
+              onPress={(timeValue) => {
+                acTimeChange(timeValue)
+              }} 
+            />
+          </View>
+        <View style={styles.square} />
       </View>
+
     </NativeBaseProvider>
   );
 }
@@ -290,7 +288,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center", 
     justifyContent: "center", 
-    flexDirection: "column",
+    flexDirection: "row",
   },
   header: {
     fontWeight: 'bold',
@@ -338,11 +336,9 @@ const styles = StyleSheet.create({
   },
   square: {
     backgroundColor: "#7cb48f",
-    width: 100,
-    height: 160,
+    width: 130,
+    height: 150,
     margin: 4,
-    padding: 5,
-    paddingLeft: 12,
   },
 
 });

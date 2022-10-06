@@ -19,3 +19,4 @@ Dependencies:
 https://www.npmjs.com/package/radio-buttons-react-native
 
 npm install @ridenui/react-native-riden-ssh --save
+ import RadioForm from 'react-native-simple-radio-button';
