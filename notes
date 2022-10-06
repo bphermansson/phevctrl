@@ -1,0 +1,157 @@
+  <TouchableNativeFeedback
+                onPress={acModeChange} >
+                <View style={styles.button}>
+                  <Text style={styles.buttonText}>Heat car</Text>
+                </View>
+              </TouchableNativeFeedback>
+              <TouchableNativeFeedback
+                onPress={acModeChange} >
+                <View style={styles.button}>
+                  <Text style={styles.buttonText}>Heat car</Text>
+                </View>
+              </TouchableNativeFeedback>
+
+              <Row>
+      <Col numRows={1}>
+      
+      <View style={{ flex: 2, backgroundColor: "white"}} >
+        <Text style={styles.baseText}>
+            Lock status: {lockData}
+        </Text>  
+        <Text style={styles.baseText}>
+            Battery: {batteryData.result}
+        </Text>  
+        <Text style={styles.baseText}>
+            Charging? {chargeData}
+        </Text>  
+        <Text style={styles.baseText}>
+            AC mode: {hvacData}
+        </Text>  
+        <Text style={styles.baseText}>
+          AC on/off: {hvacOperating}
+          </Text>
+          </View>
+      </Col>
+      </Row>
+      <Row>
+      <Col numRows={1}>
+      
+      <Row>
+          <Col numRows={1}>
+            <Text>
+              <RadioButtonRN
+                data={acModeData}
+                selectedBtn={(e) => acModeChange(e)}
+              />
+            </Text>
+          </Col>
+          <Col numRows={1}>
+            <Text>
+              <RadioButtonRN
+                data={setAcTime}
+                selectedBtn={(e) => acModeChange(e)}
+              />
+            </Text>
+          </Col>
+          <Col numRows={1}>
+            <Text>
+              <TouchableNativeFeedback
+                onPress={acModeChange} >
+                <View style={styles.button}>
+                  <Text style={styles.buttonText}>Heat car</Text>
+                </View>
+              </TouchableNativeFeedback>
+            </Text>
+          </Col>
+      </Row>
+
+</Col>
+</Row>
+      {/*
+      <TouchableNativeFeedback
+          onPress={onHeatButton} >
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>Heat car</Text>
+          </View>
+        </TouchableNativeFeedback>
+        <TouchableNativeFeedback
+          onPress={onSetACModeButton} >
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>AC Mode</Text>
+          </View>
+        </TouchableNativeFeedback>
+      */}
+        <TouchableNativeFeedback
+          onPress={onRefreshButton} >
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>{refreshButtonText}</Text>
+          </View>
+        </TouchableNativeFeedback>
+        </View>
+
+
+
+        --------------------------
+
+        <View>
+      <Row>
+        <Col numRows={1}>
+          <View style={{ flex: 1, backgroundColor: "black", height: 20 }} >
+              <Text style={styles.header}>
+                phevctrl
+              </Text>
+              <Image 
+                source={require('../assets/outlanderFront.jpg')} 
+                alt="Logo image"
+              />
+          </View>
+      
+        </Col>
+      </Row>
+      </View>
+      <Row>
+      <Col numRows={1}>
+      
+      <View style={{ flex: 2, backgroundColor: "white"}} >
+        <Text style={styles.baseText}>
+            Lock status: {lockData}
+        </Text>  
+        <Text style={styles.baseText}>
+            Battery: {batteryData.result}
+        </Text>  
+        <Text style={styles.baseText}>
+            Charging? {chargeData}
+        </Text>  
+        <Text style={styles.baseText}>
+            AC mode: {hvacData}
+        </Text>  
+        <Text style={styles.baseText}>
+          AC on/off: {hvacOperating}
+          </Text>
+          </View>
+      </Col>
+      </Row>
+-------------------------------------
+
+<TouchableNativeFeedback
+onPress={onRefreshButton} >
+<View style={styles.button}>
+  <Text style={styles.buttonText}>{refreshButtonText}</Text>
+</View>
+</TouchableNativeFeedback>
+
+<TouchableNativeFeedback
+onPress={onHeatButton} >
+<View style={styles.button}>
+  <Text style={styles.buttonText}>Heat car</Text>
+</View>
+</TouchableNativeFeedback>
+
+
+
+
+
+
+
+
+

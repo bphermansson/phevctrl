@@ -1,9 +1,9 @@
 // https://blog.logrocket.com/data-fetching-react-native/
 import React, { useState, useEffect } from "react";
-import { StyleSheet, TouchableNativeFeedback, Alert} from 'react-native';
-import RadioButtonRN from 'radio-buttons-react-native';
+import { StyleSheet, TouchableNativeFeedback, Alert, StatusBar} from 'react-native';
 import { Box, FlatList, Center, NativeBaseProvider, Text, View, Image } from "native-base";
-import { fontSize, padding } from "styled-system";
+import { fontSize, padding, textColor } from "styled-system";
+import RadioForm from 'react-native-simple-radio-button';
 
 export default function GetCarData() {
     const [lockData, setLockData] = useState([]);
@@ -23,27 +23,36 @@ export default function GetCarData() {
     // If we dont get a response in 30 seconds, something is wrong with the server. 
     setTimeout(() => {
       if (typeof(lockStatus) !== 'undefined' && lockStatus != null) {
-        console.log('Data retrieved as expected')
+        console.log('Data retrieved as expected') // False indication!
       } else {
         console.log('No lockstatus retrieved after 30 seconds')
         Alert.alert('Network error, no data retrieved!');
       }
     }, 30000);
 
-    const resp = await fetch(baseURL+"lockstatus");
-    lockStatus = await resp.json();
-    console.log("Lock status: " + lockStatus.result)
-    var lockSts = "Unlocked";
-    if (lockStatus.result == 1)
+    try 
     {
-      lockSts = "Locked";
+      const resp = await fetch(baseURL+"lockstatus");
+      lockStatus = await resp.json();
+      console.log("Lock status: " + lockStatus.result)
+      var lockSts = "Unlocked";
+      if (lockStatus.result == 1)
+      {
+        lockSts = "Locked";
+      }
+      else 
+      {
+        lockSts = "Unlocked";
+      }
+      console.log(lockSts);
+      setLockData(lockSts);
+
     }
-    else 
+    catch(e) 
     {
-      lockSts = "Unlocked";
+      console.log("Error: " + e);
+      exit();
     }
-    console.log(lockSts);
-    setLockData(lockSts);
     };
     const fetchBatteryData = async () => {
       const resp = await fetch(baseURL+"battery");
@@ -107,15 +116,48 @@ export default function GetCarData() {
       // Get AC mode
     };
 
-    const acModeChange = (data, e) => {
-      console.log("---" + data.label)
+    const acModeChange = (modeData, e) => {
+      //func=acmode&mode=cool&time=10
+      console.log("---" + modeData)
 
+      if (modeData == 'heat')
+      {
+        console.log("Set heat")
+      }
+      else if (modeData == 'cool')
+      {
+        console.log("Set cool")
+      }
+      else if (modeData == 'windscreen')
+      {
+        console.log("Set windscreen")
+      }
+      else
+      {
+        console.log("Error")
+      }
+      setChosenOptionMode(modeData)
     }
 
-    function setNewRefreshButtonText(text) {
+    const acTimeChange = (timeData, e) => {
+      console.log("---" + timeData)
+      setChosenOptionTime(timeData)
+    }
+
+    function setNewRefreshButtonText(text) 
+    {
       console.log(text);
       setRefreshButtonText(text);
     }
+
+    function onHeatButton() 
+    {
+      console.log(onHeatButton);
+      //func=acmode&mode=heat&time=10
+
+
+    }
+
     const onRefreshButton = async () => {
       setNewRefreshButtonText("Wait...");
       console.log("Refresh values, wait...");
@@ -128,91 +170,126 @@ export default function GetCarData() {
       fetchHvacStatus();  // Let this be last as it resets the Refresh button text
     };
 
-    useEffect(() => {
-      console.log("Fetch data");
-      setChargeData("");
-        fetchLockData();
-        fetchBatteryData();
-        fetchHvacStatus();
-        fetchHvacOperating();
-        fetchChargeStatus();
-        console.log("Done fetching data");
-      }, []);
-
+    try{
+      useEffect(() => {
+        console.log("Fetch data");
+        setChargeData("");
+          fetchLockData();
+          fetchBatteryData();
+          fetchHvacStatus();
+          fetchHvacOperating();
+          fetchChargeStatus();
+          console.log("Done fetching data");
+        }, []);
+    }
+    catch(e) 
+    {
+      console.log("Data fetch error: " + e);
+    }
       //       /* TODO Add a live clock*/
 
 
-      const acModeData = [
-        {
-          label: 'AC mode cool'
-         },
-         {
-          label: 'AC mode heat'
-         },
-         {
-          label: 'AC mode windscreen'
-         }
-        ];
+      const Row = ({ children }) => (
+        <View style={styles.row}>{children}</View>
+      )
+      const Col = ({ numRows, children }) => {
+        return  (
+          <View style={styles[`${numRows}col`]}>{children}</View>
+        )
+      }
+      
+      const [chosenOptionMode, setChosenOptionMode] = useState('cool'); //will store our current user options
+      const [chosenOptionTime, setChosenOptionTime] = useState('10 min'); 
+      
+      const options_mode = [
+        { label: 'AC mode cool', value: 'cool' },
+        { label: 'AC mode heat', value: 'heat' },
+        { label: 'AC mode windscreen', value: 'windscreen' },
+      ]; //create our options for radio group
+      const options_time = [
+        { label: '10 min', value: '10 min' },
+        { label: '20 min', value: '20 min' },
+        { label: '30 min', value: '30 min' },
+      ]; //create our options for radio group
 
   return (
     <NativeBaseProvider>
-      <View style={{ flex: 1, backgroundColor: "black", height: 20 }} >
-          <Text style={styles.header}>
-            phevctrl
-          </Text>
-          <Image 
-            source={require('../assets/outlanderFront.jpg')} 
-            alt="Logo image"
-          />
+      <View style={{ backgroundColor: "#7cb48f", flex: 1 }} >
+        <StatusBar
+          backgroundColor="#264d9b"
+          barStyle="light-content"
+        />
+        <Text style={styles.header}>
+          phevctrl
+        </Text>
+        <Image 
+          source={require('../assets/outlanderFront.jpg')} 
+          alt="Logo image"
+        />
       </View>
-      <View style={{ flex: 2, backgroundColor: "white"}} >
+      <View style={{ backgroundColor: "#7cb48f", flex: 2 }} >
         <Text style={styles.baseText}>
-            Lock status: {lockData}
+          Lock status: {lockData}
+        </Text> 
+        <Text style={styles.baseText}>
+          Battery: {batteryData.result}
         </Text>  
         <Text style={styles.baseText}>
-            Battery: {batteryData.result}
+          Charging? {chargeData}
         </Text>  
         <Text style={styles.baseText}>
-            Charging? {chargeData}
-        </Text>  
-        <Text style={styles.baseText}>
-            AC mode: {hvacData}
+          AC mode: {hvacData}
         </Text>  
         <Text style={styles.baseText}>
           AC on/off: {hvacOperating}
-          </Text>
-        <RadioButtonRN
-          // This can be styled if we wish, see docs
-          data={acModeData}
-          selectedBtn={(e) => acModeChange(e)}
-        />
-
-      {/*
-      <TouchableNativeFeedback
-          onPress={onHeatButton} >
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>Heat car</Text>
-          </View>
-        </TouchableNativeFeedback>
-        <TouchableNativeFeedback
-          onPress={onSetACModeButton} >
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>AC Mode</Text>
-          </View>
-        </TouchableNativeFeedback>
-      */}
-        <TouchableNativeFeedback
-          onPress={onRefreshButton} >
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>{refreshButtonText}</Text>
-          </View>
-        </TouchableNativeFeedback>
+        </Text>
+      </View>    
+ 
+      <View style={styles.rowcontainer}>
+        <View style={styles.square} >
+          <Text> {chosenOptionMode}</Text>
+          <RadioForm
+            radio_props={options_mode}
+            buttonSize={8}
+            initial={0} //initial value of this group
+            onPress={(value) => {
+              acModeChange(value)
+            }} //if the user changes options, set the new value
+          />
         </View>
+        <View style={styles.square} >
+          <Text> {chosenOptionTime}</Text>
+            <RadioForm
+              radio_props={options_time}
+              buttonSize={8}
+              initial={0} //initial value of this group
+              onPress={(timeValue) => {
+                acTimeChange(timeValue)
+              }} 
+            />
+          </View>
+        <View style={styles.square} />
+      </View>
+
     </NativeBaseProvider>
   );
 }
 
 const styles = StyleSheet.create({
+  rowcontainer: {
+    backgroundColor: "#7CA1B4",
+    flex: 1,
+    alignItems: "center", 
+    justifyContent: "center", 
+    flexDirection: "row",
+  },
+  colcontainer: {
+    backgroundColor: "#7CA1AA",
+    flex: 1,
+    alignItems: "center", 
+    justifyContent: "center", 
+    flexDirection: "row",
+  },
   header: {
     fontWeight: 'bold',
     padding: 10,
@@ -222,22 +299,46 @@ const styles = StyleSheet.create({
   baseText: {
     fontWeight: 'bold',
     padding: 10,
-    fontSize: 18
+    fontSize: 18,
+    textColor: 'black'
   },
   innerText: {
     color: 'red'
   },
   button: {
-    marginBottom: 30,
     alignItems: 'center',
     backgroundColor: '#2196F3',
     justifyContent: 'center',
-    flex:1
+    flex:1,
   },
   buttonText: {
     textAlign: 'center',
     padding: 20,
     color: 'white',
     fontSize: 18
-  }
+  },
+  row: {
+    flexDirection: "row"
+  },
+  "1col":  {
+    backgroundColor:  "lightblue",
+    borderColor:  "#fff",
+    borderWidth:  1,
+    flex:  1
+  },
+  "2col":  {
+    backgroundColor:  "green",
+    fontSize: 18,
+    padding: 20,
+    borderColor:  "#fff",
+    borderWidth:  1,
+    flex:  2
+  },
+  square: {
+    backgroundColor: "#7cb48f",
+    width: 130,
+    height: 150,
+    margin: 4,
+  },
+
 });
