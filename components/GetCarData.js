@@ -15,6 +15,8 @@ export default function GetCarData() {
 
     var baseURL = "http://192.168.1.190:8000/?func=";
     var hvacStatus = "";
+    var acmode = "heat";
+    var actime = "20 min";
 
     const fetchLockData = async () => {
     console.log(fetchLockData);
@@ -136,11 +138,13 @@ export default function GetCarData() {
       {
         console.log("Error")
       }
+      acmode = modeData
       setChosenOptionMode(modeData)
     }
 
     const acTimeChange = (timeData, e) => {
       console.log("---" + timeData)
+      actime = timeData
       setChosenOptionTime(timeData)
     }
 
@@ -150,9 +154,9 @@ export default function GetCarData() {
       setRefreshButtonText(text);
     }
 
-    function onHeatButton() 
+    function onSetACModeButton() 
     {
-      console.log(onHeatButton);
+      console.log("onSetACModeButton" + actime + "-" + acmode);
       //func=acmode&mode=heat&time=10
 
 
@@ -198,8 +202,8 @@ export default function GetCarData() {
         )
       }
       
-      const [chosenOptionMode, setChosenOptionMode] = useState('cool'); //will store our current user options
-      const [chosenOptionTime, setChosenOptionTime] = useState('10 min'); 
+      const [chosenOptionMode, setChosenOptionMode] = useState(acmode); //will store our current user options
+      const [chosenOptionTime, setChosenOptionTime] = useState(actime); 
       
       const options_mode = [
         { label: 'AC mode cool', value: 'cool' },
@@ -268,7 +272,14 @@ export default function GetCarData() {
               }} 
             />
           </View>
-        <View style={styles.square} />
+        <View style={styles.square} >
+          <TouchableNativeFeedback
+            onPress={onSetACModeButton} >
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>Set</Text>
+            </View>
+          </TouchableNativeFeedback>
+        </View>
       </View>
 
     </NativeBaseProvider>
