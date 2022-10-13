@@ -81,12 +81,7 @@
           </View>
         </TouchableNativeFeedback>
       */}
-        <TouchableNativeFeedback
-          onPress={onRefreshButton} >
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>{refreshButtonText}</Text>
-          </View>
-        </TouchableNativeFeedback>
+
         </View>
 
 
