@@ -9,6 +9,7 @@ export default function GetCarData() {
     const [lockData, setLockData] = useState([]);
     const [batteryData, setBatteryData] = useState([]);
     const [chargeData, setChargeData] = useState([]);
+    const [remainingChargeData, setRemainingChargeData] = useState([]);
     const [hvacData, setHvacMode] = useState([]);
     const [hvacOperating, setHvacOperating] = useState([]);
     const [refreshButtonText, setRefreshButtonText]= useState(['Refresh']);
@@ -78,6 +79,14 @@ export default function GetCarData() {
       }
       setChargeData(chargingYesNo);
     };
+
+    // TODO
+    /*
+    remaningchargestatus
+          const resp = await fetch(baseURL+"remaningchargestatus");
+
+
+    */
 
     const fetchHvacStatus = async () => {
       const resp = await fetch(baseURL+"hvacmode");
@@ -157,8 +166,24 @@ export default function GetCarData() {
     function onSetACModeButton() 
     {
       console.log("onSetACModeButton" + actime + "-" + acmode);
+      var thenum = actime.match(/\d+/)[0] // Get the integer
+      console.log("actime: "+thenum)
       //func=acmode&mode=heat&time=10
+      // var baseURL = "http://192.168.1.190:8000/?func=";
+      var setAcUrl = baseURL + "acmode&mode=" + acmode + "&time=" + thenum
+      console.log("Set ac Url:" + setAcUrl)
 
+/*
+      const enableAc = async () => {
+        const resp = await fetch(baseURL+"battery");
+        const batteryData = await resp.json();
+        console.log("Battery data: " + batteryData.result)
+        //setBatteryData(batteryData);
+      };
+*/
+
+      // How to shut AC down?
+      // aircon [on|off]
 
     }
 
@@ -240,6 +265,9 @@ export default function GetCarData() {
         </Text>  
         <Text style={styles.baseText}>
           Charging? {chargeData}
+        </Text>
+        <Text style={styles.baseText}>
+          Remaining charge {remainingChargeData}
         </Text>  
         <Text style={styles.baseText}>
           AC mode: {hvacData}
