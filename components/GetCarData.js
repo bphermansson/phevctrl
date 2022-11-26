@@ -273,6 +273,7 @@ export default function GetCarData() {
         <Image 
           source={require('../assets/outlanderFront.jpg')} 
           alt="Logo image"
+          styles={styles.logo}
         />
       </View>
 {/* Info panel */}
@@ -297,7 +298,7 @@ export default function GetCarData() {
       <View style={styles.rowcontainer}>
         <View style={styles.smallSquare} >
           <TouchableNativeFeedback
-              onPress={ () => onSetACButton("On")}>
+              onPress={ () => onSetACButton("on")}>
               <View style={styles.button}>
                 <Text style={styles.buttonText}>AC on</Text>
               </View>
@@ -305,13 +306,20 @@ export default function GetCarData() {
         </View>    
         <View style={styles.smallSquare} >
           <TouchableNativeFeedback
-              onPress={ () => onSetACButton("Off")}>
+              onPress={ () => onSetACButton("off")}>
               <View style={styles.button}>
                 <Text style={styles.buttonText}>AC off</Text>
               </View>
             </TouchableNativeFeedback>
         </View>    
       </View> 
+      <View style={styles.rowcontainer}>
+        <View style={styles.smallSquare} >
+          <Text style={styles.buttonText}>Cool</Text>
+        </View>    
+      </View> 
+      
+
 {/* Selections */}
       <View style={styles.rowcontainer}>
         <View style={styles.square} >
@@ -357,6 +365,7 @@ const styles = StyleSheet.create({
     alignItems: "center", 
     justifyContent: "center", 
     flexDirection: "row",
+    height: 25,
   },
   colcontainer: {
     backgroundColor: "#7CA1AA",
@@ -379,6 +388,11 @@ const styles = StyleSheet.create({
   },
   innerText: {
     color: 'red'
+  },
+  logo: {
+      height: 300,
+      flex: 1,
+      width: null
   },
   button: {
     alignItems: 'center',
