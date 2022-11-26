@@ -1,3 +1,5 @@
+*** --- Work in progress, this might work, or not, no guarantees --- ***
+
 # phevctrl
 
 The Mitsubishi Outlander Plugin hybrid uses it's own network and an app to control certain functions. 
