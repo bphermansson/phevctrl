@@ -157,14 +157,29 @@ export default function GetCarData() {
       setChosenOptionTime(timeData)
     }
 
+    async function onSetACButton(acOnOff) 
+    {
+        console.log("onSetACButton:" + acOnOff);
+        //func=aircon&state=on
+        const url = baseURL+"aircon&state=" + acOnOff
+        console.log("URL: " + url)
+        const resp = await fetch(url);
+        if (resp.result == 0) 
+        {
+
+        }
+        console.log("Command completed ")
+
+    };
+    
     function setNewRefreshButtonText(text) 
     {
       console.log(text);
       setRefreshButtonText(text);
     }
 
-    function onSetACModeButton() 
-    {
+    const onSetACModeButton = async () => {
+      var acModeResText, acOnResText;
       console.log("onSetACModeButton" + actime + "-" + acmode);
       var thenum = actime.match(/\d+/)[0] // Get the integer
       console.log("actime: "+thenum)
@@ -173,19 +188,28 @@ export default function GetCarData() {
       var setAcUrl = baseURL + "acmode&mode=" + acmode + "&time=" + thenum
       console.log("Set ac Url:" + setAcUrl)
 
-/*
-      const enableAc = async () => {
-        const resp = await fetch(baseURL+"battery");
-        const batteryData = await resp.json();
-        console.log("Battery data: " + batteryData.result)
-        //setBatteryData(batteryData);
-      };
-*/
+      // Set AC mode and time
+      const nrtime = actime.split(' ');    // remove 'min'
+      const tempurl = baseURL+"acmode&mode=" + acmode + "&time=" + nrtime[0]
+      console.log(tempurl)
+      const resp = await fetch(tempurl);
+      const setAcModeStatus = await resp.json();
+      console.log("Set AC mode result: " + setAcModeStatus.result)
 
-      // How to shut AC down?
-      // aircon [on|off]
+      // Activate AC (also needed when heating)
+      tempurl = baseURL+"aircon on"
+      console.log(tempurl)
+      resp = await fetch(tempurl);
+      const setAcOnStatus = await resp.json();
+      console.log("Set AC on result: " + setAcOnStatus.result)
+      
+      if (setAcModeStatus.result == 0) 
+      {
 
-    }
+      }
+      
+
+    };
 
     const onRefreshButton = async () => {
       setNewRefreshButtonText("Wait...");
@@ -199,10 +223,18 @@ export default function GetCarData() {
       fetchHvacStatus();  // Let this be last as it resets the Refresh button text
     };
 
+    const resetServerWifi = async () => {
+      console.log("Reset server Wifi");
+      const resp = await fetch(baseURL+"resetwifi ");
+      //const hvacOperating = await resp.json();
+      console.log("Done resetting Wifi")
+    }
+
     try{
       useEffect(() => {
-        console.log("Fetch data");
-        setChargeData("");
+          console.log("Fetch data");
+          resetServerWifi();  // When the car has been away, the Wifi has to reconnect. This is done by the server. 
+          setChargeData("");
           fetchLockData();
           fetchBatteryData();
           fetchHvacStatus();
@@ -254,8 +286,10 @@ export default function GetCarData() {
         <Image 
           source={require('../assets/outlanderFront.jpg')} 
           alt="Logo image"
+          styles={styles.logo}
         />
       </View>
+{/* Info panel */}
       <View style={{ backgroundColor: "#7cb48f", flex: 2 }} >
         <Text style={styles.baseText}>
           Lock status: {lockData}
@@ -276,7 +310,33 @@ export default function GetCarData() {
           AC on/off: {hvacOperating}
         </Text>
       </View>    
- 
+{/* Buttons */}
+      <View style={styles.rowcontainer}>
+        <View style={styles.smallSquare} >
+          <TouchableNativeFeedback
+              onPress={ () => onSetACButton("on")}>
+              <View style={styles.button}>
+                <Text style={styles.buttonText}>AC on</Text>
+              </View>
+            </TouchableNativeFeedback>
+        </View>    
+        <View style={styles.smallSquare} >
+          <TouchableNativeFeedback
+              onPress={ () => onSetACButton("off")}>
+              <View style={styles.button}>
+                <Text style={styles.buttonText}>AC off</Text>
+              </View>
+            </TouchableNativeFeedback>
+        </View>    
+      </View> 
+      <View style={styles.rowcontainer}>
+        <View style={styles.smallSquare} >
+          <Text style={styles.buttonText}>Cool</Text>
+        </View>    
+      </View> 
+      
+
+{/* Selections */}
       <View style={styles.rowcontainer}>
         <View style={styles.square} >
           <Text> {chosenOptionMode}</Text>
@@ -321,6 +381,7 @@ const styles = StyleSheet.create({
     alignItems: "center", 
     justifyContent: "center", 
     flexDirection: "row",
+    height: 25,
   },
   colcontainer: {
     backgroundColor: "#7CA1AA",
@@ -343,6 +404,11 @@ const styles = StyleSheet.create({
   },
   innerText: {
     color: 'red'
+  },
+  logo: {
+      height: 300,
+      flex: 1,
+      width: null
   },
   button: {
     alignItems: 'center',
@@ -379,5 +445,10 @@ const styles = StyleSheet.create({
     height: 150,
     margin: 4,
   },
-
+  smallSquare: {
+    backgroundColor: "#7cb48f",
+    width: 120,
+    height: 60,
+    margin: 4,
+  },
 });
