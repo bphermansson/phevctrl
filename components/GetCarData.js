@@ -14,7 +14,7 @@ export default function GetCarData() {
     const [refreshButtonText, setRefreshButtonText]= useState(['Refresh']);
     const [refreshButtonStyle, setRefreshButtonDisEn]= useState(['styles.button']);
 
-    var baseURL = "http://192.168.1.133:8000/?func=";
+    var baseURL = "http://192.168.1.190:8000/?func=";
     var hvacStatus = "";
     var acmode = "heat";
     var actime = "20 min";
@@ -179,7 +179,6 @@ export default function GetCarData() {
     const onRefreshButton = async () => {
       setNewRefreshButtonText("Wait...");
       setRefreshButtonDisEnStatus(true);
-
       console.log("Refresh values, wait...");
       setBatteryData(0);
       setChargeData(0);
