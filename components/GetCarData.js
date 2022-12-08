@@ -13,6 +13,7 @@ export default function GetCarData() {
     const [hvacData, setHvacMode] = useState([]);
     const [hvacOperating, setHvacOperating] = useState([]);
     const [refreshButtonText, setRefreshButtonText]= useState(['Refresh']);
+    const [refreshButtonStyle, setRefreshButtonDisEn]= useState(['styles.button']);
 
     var baseURL = "http://192.168.1.190:8000/?func=";
     var hvacStatus = "";
@@ -20,42 +21,42 @@ export default function GetCarData() {
     var actime = "20 min";
 
     const fetchLockData = async () => {
-    console.log(fetchLockData);
-    var lockStatus="";
-    setLockData(lockSts);
-    // If we dont get a response in 30 seconds, something is wrong with the server. 
-    setTimeout(() => {
-      if (typeof(lockStatus) !== 'undefined' && lockStatus != null) {
-        console.log('Data retrieved as expected') // False indication!
-      } else {
-        console.log('No lockstatus retrieved after 30 seconds')
-        Alert.alert('Network error, no data retrieved!');
-      }
-    }, 30000);
-
-    try 
-    {
-      const resp = await fetch(baseURL+"lockstatus");
-      lockStatus = await resp.json();
-      console.log("Lock status: " + lockStatus.result)
-      var lockSts = "Unlocked";
-      if (lockStatus.result == 1)
-      {
-        lockSts = "Locked";
-      }
-      else 
-      {
-        lockSts = "Unlocked";
-      }
-      console.log(lockSts);
+      console.log("fetchLockData: "  + fetchLockData);
+      var lockStatus="";
       setLockData(lockSts);
+      // If we dont get a response in 30 seconds, something is wrong with the server. 
+      setTimeout(() => {
+        if (typeof(lockStatus) !== 'undefined' && lockStatus != null) {
+          console.log('Data retrieved as expected') // False indication!
+        } else {
+          console.log('No lockstatus retrieved after 30 seconds')
+          Alert.alert('Network error, no data retrieved!');
+        }
+      }, 30000);
 
-    }
-    catch(e) 
-    {
-      console.log("Error: " + e);
-      exit();
-    }
+      try 
+      {
+        const resp = await fetch(baseURL+"lockstatus");
+        lockStatus = await resp.json();
+        console.log("Lock status: " + lockStatus.result)
+        var lockSts = "Unlocked";
+        if (lockStatus.result == 1)
+        {
+          lockSts = "Locked";
+        }
+        else 
+        {
+          lockSts = "Unlocked";
+        }
+        console.log(lockSts);
+        setLockData(lockSts);
+
+      }
+      catch(e) 
+      {
+        console.log("Error: " + e);
+        exit();
+      }
     };
     const fetchBatteryData = async () => {
       const resp = await fetch(baseURL+"battery");
@@ -178,6 +179,19 @@ export default function GetCarData() {
       setRefreshButtonText(text);
     }
 
+    function setRefreshButtonDisEnStatus(truefalse)
+    {
+      if(truefalse)
+      {
+        console.log("Disable button")
+        setRefreshButtonDisEn(styles.buttonDisabled)
+      }
+      else 
+      {
+        setRefreshButtonDisEn(styles.button)
+      }      
+    }
+
     const onSetACModeButton = async () => {
       var acModeResText, acOnResText;
       console.log("onSetACModeButton" + actime + "-" + acmode);
@@ -213,6 +227,7 @@ export default function GetCarData() {
 
     const onRefreshButton = async () => {
       setNewRefreshButtonText("Wait...");
+      setRefreshButtonDisEnStatus(true);
       console.log("Refresh values, wait...");
       setBatteryData(0);
       setChargeData(0);
@@ -221,6 +236,7 @@ export default function GetCarData() {
       fetchBatteryData();
       fetchChargeStatus();
       fetchHvacStatus();  // Let this be last as it resets the Refresh button text
+      setRefreshButtonDisEnStatus(false);
     };
 
     const resetServerWifi = async () => {
@@ -334,7 +350,17 @@ export default function GetCarData() {
           <Text style={styles.buttonText}>Cool</Text>
         </View>    
       </View> 
-      
+      <View style={styles.lowrowcontainer}>
+        <View style={styles.rectangle} >
+          <TouchableNativeFeedback
+            onPress={onRefreshButton} 
+              >
+            <View style={styles.button}>
+              <Text style={refreshButtonStyle}>{refreshButtonText}</Text>
+            </View>
+          </TouchableNativeFeedback>
+        </View>
+      </View>
 
 {/* Selections */}
       <View style={styles.rowcontainer}>
@@ -383,6 +409,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     height: 25,
   },
+  lowrowcontainer: {
+    backgroundColor: "#7CA1B4",
+    flex: 1,
+    alignItems: "center", 
+    justifyContent: "center", 
+    flexDirection: "row",   
+    maxHeight: 70,
+    
+  },
+  
   colcontainer: {
     backgroundColor: "#7CA1AA",
     flex: 1,
@@ -416,6 +452,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex:1,
   },
+  buttonDisabled: {
+    textAlign: 'center',
+    padding: 20,
+    color: 'red',
+    opacity: .6,
+  },
   buttonText: {
     textAlign: 'center',
     padding: 20,
@@ -444,6 +486,14 @@ const styles = StyleSheet.create({
     width: 130,
     height: 150,
     margin: 4,
+    padding: 10,
+  },
+  rectangle: {
+    backgroundColor: "#7cb48f",
+    width: 130,
+    height: 70,
+    margin: 0,
+    padding: 4,
   },
   smallSquare: {
     backgroundColor: "#7cb48f",
