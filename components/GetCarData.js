@@ -121,13 +121,6 @@ export default function GetCarData() {
       setHvacOperating(hvacOnOff)
     };
 
-    const onAcModeSelect = async (e) => {
-      const dta = e.json();
-      alert(dta + "I'm doing nothing!");
-      //console.log("AC mode: " + hvacStatus)
-      // Get AC mode
-    };
-
     const acModeChange = (modeData, e) => {
       //func=acmode&mode=cool&time=10
       console.log("---" + modeData)
@@ -170,8 +163,15 @@ export default function GetCarData() {
 
         }
         console.log("Command completed ")
-
     };
+  
+    async function onAcModeSelect(acMode) 
+    {
+      //alert("I'm doing nothing!");
+      console.log("AC mode: " + acMode)
+      // func=acmode&mode=cool&time=10
+    };
+
     
     function setNewRefreshButtonText(text) 
     {
@@ -291,7 +291,7 @@ export default function GetCarData() {
 
   return (
     <NativeBaseProvider>
-      <View style={{ backgroundColor: "#7cb48f", flex: 1 }} >
+      <View style={{ backgroundColor: "#7cb48f", flex: 1, padding: 1 }} >
         <StatusBar
           backgroundColor="#264d9b"
           barStyle="light-content"
@@ -306,7 +306,7 @@ export default function GetCarData() {
         />
       </View>
 {/* Info panel */}
-      <View style={{ backgroundColor: "#7cb48f", flex: 2 }} >
+      <View style={{ backgroundColor: "#7cb48f", flex: 2, padding: 1 }} >
         <Text style={styles.baseText}>
           Lock status: {lockData}
         </Text> 
@@ -343,11 +343,32 @@ export default function GetCarData() {
                 <Text style={styles.buttonText}>AC off</Text>
               </View>
             </TouchableNativeFeedback>
-        </View>    
+        </View>   
       </View> 
       <View style={styles.rowcontainer}>
         <View style={styles.smallSquare} >
-          <Text style={styles.buttonText}>Cool</Text>
+          <TouchableNativeFeedback
+              onPress={ () => onAcModeSelect("cool")}>
+              <View style={styles.buttonLblue}>
+                <Text style={styles.buttonText}>Cool</Text>
+              </View>
+            </TouchableNativeFeedback>
+        </View>    
+        <View style={styles.smallSquare} >
+          <TouchableNativeFeedback
+            onPress={ () => onAcModeSelect("heat")}>
+                <View style={styles.buttonLblue}>
+                <Text style={styles.buttonText}>Heat</Text>
+              </View>
+            </TouchableNativeFeedback>
+        </View>    
+        <View style={styles.smallSquare} >
+          <TouchableNativeFeedback
+              onPress={ () => onAcModeSelect("windscreen")}>
+              <View style={styles.buttonLblue}>
+                <Text style={styles.buttonText}>Windscreen</Text>
+              </View>
+            </TouchableNativeFeedback>
         </View>    
       </View> 
       <View style={styles.lowrowcontainer}>
@@ -403,20 +424,19 @@ export default function GetCarData() {
 const styles = StyleSheet.create({
   rowcontainer: {
     backgroundColor: "#7CA1B4",
-    flex: 1,
+    flex: 0,
     alignItems: "center", 
     justifyContent: "center", 
     flexDirection: "row",
-    height: 25,
+    maxHeight: 210,
+    padding: 5,
   },
   lowrowcontainer: {
     backgroundColor: "#7CA1B4",
-    flex: 1,
+    flex: 0,
     alignItems: "center", 
     justifyContent: "center", 
     flexDirection: "row",   
-    maxHeight: 70,
-    
   },
   
   colcontainer: {
@@ -449,6 +469,12 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     backgroundColor: '#2196F3',
+    justifyContent: 'center',
+    flex:1,
+  },
+  buttonLblue: {
+    alignItems: 'center',
+    backgroundColor: '#397eed',
     justifyContent: 'center',
     flex:1,
   },
@@ -499,6 +525,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#7cb48f",
     width: 120,
     height: 60,
-    margin: 4,
+    margin: 1,
   },
 });
