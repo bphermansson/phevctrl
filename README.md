@@ -19,6 +19,7 @@ that just what this projects is all about, developing an app to control the car 
 
 Dependencies:
 https://www.npmjs.com/package/radio-buttons-react-native
+https://www.npmjs.com/package/react-native-dropdown-select-list
 
 npm install @ridenui/react-native-riden-ssh --save
  import RadioForm from 'react-native-simple-radio-button';

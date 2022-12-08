@@ -4,6 +4,7 @@ import { StyleSheet, TouchableNativeFeedback, Alert, StatusBar} from 'react-nati
 import { Box, FlatList, Center, NativeBaseProvider, Text, View, Image } from "native-base";
 import { fontSize, padding, textColor } from "styled-system";
 import RadioForm from 'react-native-simple-radio-button';
+import { SelectList } from 'react-native-dropdown-select-list'
 
 export default function GetCarData() {
     const [lockData, setLockData] = useState([]);
@@ -14,6 +15,14 @@ export default function GetCarData() {
     const [hvacOperating, setHvacOperating] = useState([]);
     const [refreshButtonText, setRefreshButtonText]= useState(['Refresh']);
     const [refreshButtonStyle, setRefreshButtonDisEn]= useState(['styles.button']);
+
+    // SelectList for AC Times
+    const [timeSelected, setSelected] = React.useState("");
+    const data = [
+        {key:'1', value:'10min'},
+        {key:'2', value:'20min'},
+        {key:'3', value:'30min'},
+    ]
 
     var baseURL = "http://192.168.1.190:8000/?func=";
     var hvacStatus = "";
@@ -168,8 +177,23 @@ export default function GetCarData() {
     async function onAcModeSelect(acMode) 
     {
       //alert("I'm doing nothing!");
-      console.log("AC mode: " + acMode)
+      if(timeSelected=="2"){
+        console.log("No time given");  
+      }
+      console.log("AC mode: " + acMode + " " + timeSelected)
+      var intAcTime = timeSelected.match(/\d+/)[0] // Get the integer
+      console.log("actime: "+ intAcTime)
       // func=acmode&mode=cool&time=10
+      const url = baseURL+"acmode&mode=" + acMode + "&time=" + intAcTime
+      console.log("URL: " + url)
+     // const resp = await fetch(url);
+     /*console.log("Result: " + resp.result)
+      if (resp.result == 0) 
+      {
+
+      }*/
+      fetchHvacStatus()
+      console.log("Command completed ")
     };
 
     
@@ -372,6 +396,14 @@ export default function GetCarData() {
         </View>    
       </View> 
       <View style={styles.lowrowcontainer}>
+        <Text style={{ fontSize: 18, padding: 5 }} >AC run time:</Text>
+        <SelectList 
+          setSelected={(val) => setSelected(val)} 
+          data={data} 
+          search={false} 
+          defaultOption={{ key:'20min', value:'20min' }}
+          save="value"
+        />
         <View style={styles.rectangle} >
           <TouchableNativeFeedback
             onPress={onRefreshButton} 
