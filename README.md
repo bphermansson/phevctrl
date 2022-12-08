@@ -1,3 +1,5 @@
+*** --- Work in progress, this might work, or not, no guarantees --- ***
+
 # phevctrl
 
 The Mitsubishi Outlander Plugin hybrid uses it's own network and an app to control certain functions. 
@@ -20,3 +22,5 @@ https://www.npmjs.com/package/radio-buttons-react-native
 
 npm install @ridenui/react-native-riden-ssh --save
  import RadioForm from 'react-native-simple-radio-button';
+
+ Test drive with; 'npm start'
