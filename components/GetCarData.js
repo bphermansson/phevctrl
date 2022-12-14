@@ -1,8 +1,6 @@
 // https://blog.logrocket.com/data-fetching-react-native/
 import React, { useState, useEffect } from "react";
 import { StyleSheet, TouchableNativeFeedback, Alert, StatusBar} from 'react-native';
-import { Box, FlatList, Center, NativeBaseProvider, Text, View, Image } from "native-base";
-import { fontSize, padding, textColor } from "styled-system";
 import RadioForm from 'react-native-simple-radio-button';
 import { SelectList } from 'react-native-dropdown-select-list'
 
@@ -97,6 +95,11 @@ export default function GetCarData() {
 
 
     */
+    const remaningchargestatus = async () => {
+      const resp = await fetch(baseURL+"remaningchargestatus");
+      const hvacMode = await resp.json();
+      console.log("Hvac mode: " + hvacMode.result)
+    }
 
     const fetchHvacStatus = async () => {
       const resp = await fetch(baseURL+"hvacmode");
