@@ -24,4 +24,5 @@ https://www.npmjs.com/package/react-native-dropdown-select-list
 npm install @ridenui/react-native-riden-ssh --save
  import RadioForm from 'react-native-simple-radio-button';
 
- Test drive with; 'npm start'
+Test drive with; 'npm start'
+Build apk with: eas build -p android --profile preview
