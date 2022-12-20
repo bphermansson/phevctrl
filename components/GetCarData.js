@@ -87,6 +87,7 @@ export default function GetCarData() {
       {
         chargingYesNo = "Yes";
       }
+      console.log(chargingYesNo);
       setChargeData(chargingYesNo);
     };
 
@@ -94,9 +95,15 @@ export default function GetCarData() {
     /*
     remaningchargestatus
           const resp = await fetch(baseURL+"remaningchargestatus");
-
-
     */
+
+    const fetchRemainingChargeStatus = async () => {
+      const resp = await fetch(baseURL+"remaningchargestatus"); // remaningchargestatus is a spelling error in phevctl
+      const remainingChargeData = await resp.json();
+      console.log("Remaining charge: " + remainingchargestatus.result)
+      setRemainingChargeData(remainingChargeData);
+    };
+
 
     const fetchHvacStatus = async () => {
       const resp = await fetch(baseURL+"hvacmode");
@@ -257,6 +264,7 @@ export default function GetCarData() {
       setChargeData(0);
       setHvacMode(0);
       fetchLockData();
+      fetchRemainingChargeStatus();
       fetchBatteryData();
       fetchChargeStatus();
       fetchHvacStatus();  // Let this be last as it resets the Refresh button text
@@ -278,6 +286,7 @@ export default function GetCarData() {
           fetchLockData();
           fetchBatteryData();
           fetchHvacStatus();
+          fetchRemainingChargeStatus();
           fetchHvacOperating();
           fetchChargeStatus();
           console.log("Done fetching data");
@@ -341,7 +350,7 @@ export default function GetCarData() {
           Charging? {chargeData}
         </Text>
         <Text style={styles.baseText}>
-          Remaining charge {remainingChargeData}
+          Remaining charge: {remainingChargeData}
         </Text>  
         <Text style={styles.baseText}>
           AC mode: {hvacData}
